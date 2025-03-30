@@ -1,0 +1,118 @@
+paths:
+  /api/users/:
+    get:
+      summary: Obtener todos los usuarios
+      tags:
+        - Users
+      responses:
+        "200":
+          description: Lista de usuarios obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        "500":
+          description: Error interno del servidor
+
+  /api/users/{uid}:
+    get:
+      summary: Obtener un usuario por ID
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+    put:
+      summary: Actualizar datos de un usuario
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nombre del usuario
+                email:
+                  type: string
+                  description: Correo electrónico del usuario
+                role:
+                  type: string
+                  description: Rol del usuario
+      responses:
+        "200":
+          description: Usuario actualizado exitosamente
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+    delete:
+      summary: Eliminar un usuario
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Usuario eliminado exitosamente
+        "404":
+          description: Usuario no encontrado
+        "500":
+          description: Error interno del servidor
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID único del usuario
+        name:
+          type: string
+          description: Nombre del usuario
+        email:
+          type: string
+          description: Correo electrónico del usuario
+        role:
+          type: string
+          description: Rol del usuario
+      example:
+        _id: "64abcd1234567890"
+        name: "John Doe"
+        email: "john.doe@example.com"
+        role: "user"

@@ -1,0 +1,179 @@
+paths:
+  /api/pets/:
+    get:
+      summary: Traer todas las mascotas
+      tags:
+        - Pets
+      responses:
+        "200":
+          description: Se obtuvo todas las mascotas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pets"
+        "500":
+          description: Ocurrió un error a nivel de base de datos
+    post:
+      summary: Crear una nueva mascota
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Pets"
+      responses:
+        "201":
+          description: Mascota creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pets"
+        "400":
+          description: Valores incompletos
+
+  /api/pets/withimage:
+    post:
+      summary: Crear una nueva mascota con una imagen
+      tags:
+        - Pets
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nombre de la mascota
+                specie:
+                  type: string
+                  description: Raza de la mascota
+                birthDate:
+                  type: string
+                  format: date
+                  description: Fecha de nacimiento de la mascota
+                image:
+                  type: string
+                  format: binary
+                  description: Imagen de la mascota
+      responses:
+        "201":
+          description: Mascota creada con imagen exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pets"
+        "400":
+          description: Valores incompletos
+
+  /api/pets/{pid}:
+    put:
+      summary: Actualiza una mascota
+      tags:
+        - Pets
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID de la mascota
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/updatePet"
+      responses:
+        "200":
+          description: Mascota actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pets"
+        "404":
+          description: Mascota no encontrada
+
+    delete:
+      summary: Eliminar una mascota
+      tags:
+        - Pets
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID de la mascota
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Mascota eliminada exitosamente
+        "404":
+          description: Mascota no encontrada
+
+components:
+  schemas:
+    Pets:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID único de MongoDB
+        name:
+          type: string
+          description: Nombre de la mascota
+        specie:
+          type: string
+          description: Especie de la mascota
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento de la mascota
+        adopted:
+          type: boolean
+          description: Si la mascota está adoptada
+        owner:
+          type: object
+          description: Información del dueño
+        image:
+          type: string
+          description: Ruta de la imagen de la mascota
+      example:
+        _id: "64abcd1234567890"
+        name: "Ramiro"
+        specie: "Gato"
+        birthDate: "2020-01-01"
+        adopted: false
+        owner: {}
+        image: "http://example.com/img/ramiro.jpg"
+  requestBodies:
+    updatePet:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Nombre de la mascota
+        specie:
+          type: string
+          description: Especie de la mascota
+        birthDate:
+          type: string
+          format: date
+          description: Fecha de nacimiento de la mascota
+        adopted:
+          type: boolean
+          description: Si la mascota está adoptada
+        owner:
+          type: object
+          description: Información del dueño
+      example:
+        name: "Rex"
+        specie: "Perro"
+        birthDate: "2024-02-20"
+        adopted: true
+        owner: {}
